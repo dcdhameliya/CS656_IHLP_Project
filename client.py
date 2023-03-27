@@ -1,6 +1,5 @@
 import socket, threading
 
-
 def send():
     # while True:
     msg = input('\nSelect your card >> ')
