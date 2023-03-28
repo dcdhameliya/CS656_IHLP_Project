@@ -21,22 +21,6 @@ def accept_client():
             thread_client.start()
 
 
-def card_name_from_value(card_value):
-    card_value = int(card_value)
-    if card_value > 1 & card_value < 11:
-        return card_value
-    elif card_value == 11:
-        return "J"
-    elif card_value == 12:
-        return "Q"
-    elif card_value == 13:
-        return "K"
-    elif card_value == 14:
-        return "A"
-    else:
-        return 0
-
-
 def send_result():
     for client in CONNECTION_LIST:
         temp_list = {
@@ -44,7 +28,7 @@ def send_result():
             "used_cards": client['used_cards'],
             "score_round": client['score_round'],
             "total_score": client['total_score'],
-            "serer_card": SERVER_CARDS[SERVER_CARDS_COUNTER[0]]
+            "server_card": SERVER_CARDS[SERVER_CARDS_COUNTER[0]]
         }
         y = str(json.dumps(temp_list))
         client['connection'].send(bytes(str(y), 'utf-8'))
@@ -53,23 +37,35 @@ def send_result():
 
 def calculate_result():
     server_card = SERVER_CARDS[SERVER_CARDS_COUNTER[0]]
-    client1_card = CONNECTION_LIST[0]['used_cards'][-1]
-    client2_card = CONNECTION_LIST[1]['used_cards'][-1]
-    client3_card = CONNECTION_LIST[2]['used_cards'][-1]
+    client1_card = int(CONNECTION_LIST[0]['used_cards'][-1])
+    client2_card = int(CONNECTION_LIST[1]['used_cards'][-1])
+    client3_card = int(CONNECTION_LIST[2]['used_cards'][-1])
 
-    if client1_card > server_card & client1_card > client2_card & client1_card > client3_card:
-        CONNECTION_LIST[0]['score_round'].append(server_card)
+    print(client1_card)
+    print(client2_card)
+    print(client3_card)
 
-    if client2_card > server_card & client2_card > client1_card & client2_card > client3_card:
-        CONNECTION_LIST[1]['score_round'].append(server_card)
+    if client1_card >= client2_card and client1_card >= client3_card:
+        CONNECTION_LIST[0]['score_round'][SERVER_CARDS_COUNTER[0]] = server_card
+        print("if 1")
 
-    if client3_card > server_card & client3_card > client1_card & client3_card > client2_card:
-        CONNECTION_LIST[2]['score_round'].append(server_card)
+    if client2_card >= client1_card and client2_card >= client3_card:
+        CONNECTION_LIST[1]['score_round'][SERVER_CARDS_COUNTER[0]] = server_card
+        print("if 2")
+
+    if client3_card >= client1_card and client3_card >= client2_card:
+        CONNECTION_LIST[2]['score_round'][SERVER_CARDS_COUNTER[0]] = server_card
+        print("if 3")
+
+    for i in range(len(CONNECTION_LIST)):
+        CONNECTION_LIST[i]['total_score'] = sum(int(j) for j in CONNECTION_LIST[i]['score_round'])
 
     print(SERVER_CARDS[SERVER_CARDS_COUNTER[0]])
-    print(CONNECTION_LIST)
+    # print(CONNECTION_LIST)
 
     SERVER_CARDS_COUNTER[0] = SERVER_CARDS_COUNTER[0] + 1
+
+    send_result()
 
 
 def print_card_table():
@@ -88,11 +84,11 @@ def broadcast_usr(i):
         try:
             data = CONNECTION_LIST[i]['connection'].recv(1024)
             if data:
-                card_value = data.decode("utf-8")
-                card = card_name_from_value(card_value)
+                card = data.decode("utf-8")
+                # card = card_name_from_value(card_value)
                 print("{0} choose".format(CONNECTION_LIST[i]['name']), card)
                 list = CONNECTION_LIST[i]['used_cards']
-                list.append(card)
+                list.append(int(card))
                 CONNECTION_LIST[i]['used_cards'] = list
                 # b_usr(cli_sock, uname, card)
                 print_card_table()
@@ -109,7 +105,7 @@ def broadcast_usr(i):
 
 
 if __name__ == "__main__":
-    SERVER_CARDS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    SERVER_CARDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
     random.shuffle(SERVER_CARDS)
 
     CLIENT_COUNT = [0]
@@ -120,19 +116,19 @@ if __name__ == "__main__":
             "connection": None,
             "name": "",
             "used_cards": [],
-            "score_round": [],
+            "score_round": [0 for element in range(13)],
             "total_score": []
         }, {
             "connection": None,
             "name": "",
             "used_cards": [],
-            "score_round": [],
+            "score_round": [0 for element in range(13)],
             "total_score": []
         }, {
             "connection": None,
             "name": "",
             "used_cards": [],
-            "score_round": [],
+            "score_round": [0 for element in range(13)],
             "total_score": []
         }
     ]
