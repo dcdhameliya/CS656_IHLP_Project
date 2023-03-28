@@ -30,9 +30,20 @@ def card_value_from_name(card_value):
 
 
 def send():
-    # while True:
-    msg = input('\nSelect your card >> ')
-    msg = card_value_from_name(msg)
+    while True:
+        msg = input('\nSelect your card >> ')
+        msg = card_value_from_name(msg)
+
+        if msg < 1 or 13 < msg:
+            print("Invalid card Please choose valid card...")
+            continue
+        elif msg in CARD_LIST:
+            print("You already used this card please choose another one....")
+            continue
+        else:
+            CARD_LIST.append(msg)
+            break
+
     cli_sock.send(str(msg).encode("utf-8"))
 
 
@@ -42,11 +53,11 @@ def receive():
             data = cli_sock.recv(1024)
             if data:
                 data = data.decode("utf-8")
-                print(data)
+                # print(data)
                 data = eval(data)
 
                 if len(data['used_cards']) != 0:
-                    print("You get ", data['score_round'][-1], "")
+                    print("You get ", data['score_this_round'], " in this round")
                     print("Your total score is ", data['total_score'])
 
                 print("\n\n\n\nThe card choosen by server is ", card_name_from_value(data['server_card']))
@@ -57,6 +68,7 @@ def receive():
 
 
 if __name__ == "__main__":
+    CARD_LIST = []
     # socket
     cli_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

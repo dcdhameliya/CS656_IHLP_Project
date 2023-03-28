@@ -9,9 +9,9 @@ def accept_client():
         CONNECTION_LIST[CLIENT_COUNT[0]]['connection'] = cli_sock
         CONNECTION_LIST[CLIENT_COUNT[0]]['name'] = uname
         CLIENT_COUNT[0] = CLIENT_COUNT[0] + 1
-        print(CONNECTION_LIST)
+        # print(CONNECTION_LIST)
         print('%s is now connected' % uname)
-        print(CLIENT_COUNT)
+        # print(CLIENT_COUNT)
 
     if CLIENT_COUNT[0] == 3:
         send_result()
@@ -28,7 +28,8 @@ def send_result():
             "used_cards": client['used_cards'],
             "score_round": client['score_round'],
             "total_score": client['total_score'],
-            "server_card": SERVER_CARDS[SERVER_CARDS_COUNTER[0]]
+            "server_card": SERVER_CARDS[SERVER_CARDS_COUNTER[0]],
+            "score_this_round": client['score_round'][SERVER_CARDS_COUNTER[0] - 1]
         }
         y = str(json.dumps(temp_list))
         client['connection'].send(bytes(str(y), 'utf-8'))
@@ -41,21 +42,21 @@ def calculate_result():
     client2_card = int(CONNECTION_LIST[1]['used_cards'][-1])
     client3_card = int(CONNECTION_LIST[2]['used_cards'][-1])
 
-    print(client1_card)
-    print(client2_card)
-    print(client3_card)
+    # print(client1_card)
+    # print(client2_card)
+    # print(client3_card)
 
     if client1_card >= client2_card and client1_card >= client3_card:
         CONNECTION_LIST[0]['score_round'][SERVER_CARDS_COUNTER[0]] = server_card
-        print("if 1")
+        # print("if 1")
 
     if client2_card >= client1_card and client2_card >= client3_card:
         CONNECTION_LIST[1]['score_round'][SERVER_CARDS_COUNTER[0]] = server_card
-        print("if 2")
+        # print("if 2")
 
     if client3_card >= client1_card and client3_card >= client2_card:
         CONNECTION_LIST[2]['score_round'][SERVER_CARDS_COUNTER[0]] = server_card
-        print("if 3")
+        # print("if 3")
 
     for i in range(len(CONNECTION_LIST)):
         CONNECTION_LIST[i]['total_score'] = sum(int(j) for j in CONNECTION_LIST[i]['score_round'])
@@ -70,7 +71,7 @@ def calculate_result():
 
 def print_card_table():
     if CARD_ACCEPT_FLAG[0] == 3:
-        print(CARD_TABLE)
+        # print(CARD_TABLE)
         CARD_ACCEPT_FLAG[0] = 1
         calculate_result()
     else:
@@ -79,7 +80,7 @@ def print_card_table():
 
 def broadcast_usr(i):
     i = int(i)
-    print(i)
+    # print(i)
     while True:
         try:
             data = CONNECTION_LIST[i]['connection'].recv(1024)
@@ -146,7 +147,7 @@ if __name__ == "__main__":
 
     # listen
     ser_sock.listen(1)
-    print('Chat server started on port : ' + str(PORT))
+    print('Game server started on port : ' + str(PORT))
 
     thread_ac = threading.Thread(target=accept_client)
     thread_ac.start()
