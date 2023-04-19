@@ -17,6 +17,7 @@ def accept_client():
         send_result()
         print("Server card is ", SERVER_CARDS[SERVER_CARDS_COUNTER[0]])
         for i in range(len(CONNECTION_LIST)):
+            print('')
             thread_client = threading.Thread(target=broadcast_usr, args=str(i))
             thread_client.start()
 
@@ -33,6 +34,7 @@ def send_result():
         }
         y = str(json.dumps(temp_list))
         client['connection'].send(bytes(str(y), 'utf-8'))
+        print('heyyyyy')
         print(bytes(y, 'utf-8'))
 
 
@@ -80,13 +82,20 @@ def print_card_table():
 
 def broadcast_usr(i):
     i = int(i)
-    # print(i)
+    print('broadcast1')
+    print(i)
     while True:
+        print('broadcast2')
         try:
             data = CONNECTION_LIST[i]['connection'].recv(1024)
+            print('data')
+            print(data)
             if data:
                 card = data.decode("utf-8")
+                print('card')
+                print(card)
                 # card = card_name_from_value(card_value)
+                print('choose')
                 print("{0} choose".format(CONNECTION_LIST[i]['name']), card)
                 list = CONNECTION_LIST[i]['used_cards']
                 list.append(int(card))
