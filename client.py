@@ -6,7 +6,8 @@ r = tk.Tk()
 r.title('A Game of Strategy')
 r.geometry("1000x1000")
 
-serverCard = tk.Label(r, text = "Server Card:").place(x = 200,y = 150)
+serverCard = tk.Label(r, text="Server Card:").place(x=200, y=150)
+
 
 def card_name_from_value(card_value):
     card_value = int(card_value)
@@ -41,9 +42,9 @@ def send():
     while True:
         print('aa')
 
-        def setmsg(e):
-            print('heyyyyyyyy')
-            print(e)
+        # def setmsg(e):
+        #     print('heyyyyyyyy')
+        #     print(e)
             # msg = card_value_from_name(button.image.name)
 
             # if msg < 1 or 13 < msg:
@@ -55,18 +56,17 @@ def send():
             # else:
             #     CARD_LIST.append(msg)
             #     break
-            
+
             # print(msg)
 
+        L1 = tk.Label(text='Select your card')
+        L1.place(x=30, y=200)
 
-        L1=tk.Label(text='Select your card')
-        L1.place(x = 30,y = 200)
-        
-        image1 = ImageTk.PhotoImage(Image.open("C_2.png").resize((100,200), Image.ANTIALIAS))
+        image1 = ImageTk.PhotoImage(Image.open("images/C_2.png").resize((100, 200), Image.ANTIALIAS))
 
-        button = tk.Button(r, image=image1,command=setmsg,borderwidth=0)
-        button.place(x = 30,y = 200)
-        
+        button = tk.Button(r, image=image1, command=setmsg, borderwidth=0)
+        button.place(x=30, y=200)
+
     # cli_sock.send(str(msg).encode("utf-8"))
 
 
@@ -104,31 +104,29 @@ if __name__ == "__main__":
     cli_sock.connect((HOST, PORT))
     print('Connected to remote host...')
 
+
     # thread_send = threading.Thread(target=send)
     # thread_send.start()
 
-    
     # r.configure(bg='white')
-
-    
 
     def connect_uname():
         print(nameinp.get())
         cli_sock.send(nameinp.get().encode("utf-8"))
 
+
     titleLabel = tk.Label(r, text="A Game of Strategy! Let's Play!")
-    ipLabel = tk.Label(r, text = "Enter your name to start a Game:").place(x = 30,y = 50)
+    ipLabel = tk.Label(r, text="Enter your name to start a Game:").place(x=30, y=50)
 
     nameinp = tk.StringVar()
-    unameText = tk.Entry(r,textvar=nameinp,width = 20).place(x = 400, y = 50)
+    unameText = tk.Entry(r, textvar=nameinp, width=20).place(x=400, y=50)
 
-    startButton = tk.Button(r, text = "Play Game",command = connect_uname).place(x = 30, y = 100)
+    startButton = tk.Button(r, text="Play Game", command=connect_uname).place(x=30, y=100)
 
-    scoreLabel = tk.Label(r, text = "Your Current Score:").place(x = 30,y = 150)
-    scoreDisplayLabel = tk.Label(r, text = "0").place(x = 180,y = 150)
-
+    scoreLabel = tk.Label(r, text="Your Current Score:").place(x=30, y=150)
+    scoreDisplayLabel = tk.Label(r, text="0").place(x=180, y=150)
 
     thread_receive = threading.Thread(target=receive)
     thread_receive.start()
-    
+
     r.mainloop()
