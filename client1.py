@@ -20,7 +20,6 @@ info_menu = Menu(window)
 text = Label(window, text="Score: 0", bg="green")
 text.place(x=0, y=0)
 
-
 def clear_center_frame():
     for widgets in frame_cards_middle.winfo_children():
         widgets.destroy()
